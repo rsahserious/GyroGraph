@@ -1,0 +1,75 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="10px"
+    android:paddingLeft="10px"
+    android:paddingRight="10px"
+    android:paddingTop="10px"
+    tools:context=".GyroGraph" >
+
+    <Button
+        android:id="@+id/buttonSensDec"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/buttonSensInc"
+        android:textSize="12dp"
+        android:text="Sens -" />
+
+    <Button
+        android:id="@+id/buttonSensInc"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/buttonSensDec"
+        android:layout_alignParentLeft="true"
+        android:textSize="12dp"
+        android:text="Sens +" />
+
+    <Button
+        android:id="@+id/buttonRMSDec"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_alignBaseline="@+id/buttonRMSInc"
+        android:layout_alignBottom="@+id/buttonRMSInc"
+        android:layout_toRightOf="@+id/buttonRMSInc"
+        android:textSize="12dp"
+        android:text="RMS -" />
+
+    <Button
+        android:id="@+id/buttonMap"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_alignBottom="@+id/buttonRMSDec"
+        android:layout_alignParentRight="true"
+        android:textSize="12dp"
+        android:text="Map" />
+
+    <Button
+        android:id="@+id/buttonRMSInc"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="60dp"
+        android:layout_height="35dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="43dp"
+        android:layout_toRightOf="@+id/buttonSensDec"
+        android:text="RMS +"
+        android:textSize="12dp" />
+
+    <Button
+        android:id="@+id/buttonRecording"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_alignBaseline="@+id/buttonMap"
+        android:layout_alignBottom="@+id/buttonMap"
+        android:layout_marginRight="86dp"
+        android:layout_toLeftOf="@+id/buttonMap"
+        android:text="Start recording"
+        android:textSize="12dp" />
+
+</RelativeLayout>
