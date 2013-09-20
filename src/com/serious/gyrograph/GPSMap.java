@@ -17,6 +17,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,11 +29,22 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-public class GPSMap extends FragmentActivity
+public class GPSMap extends FragmentActivity implements OnClickListener
 {
+	public static final int DEFAULT_CONTRAST = 0;
+	
 	GoogleMap map;
 	List<StreetData> streetData = new ArrayList<StreetData>();
-
+	int contrast = DEFAULT_CONTRAST;
+	
+	private enum ViewMode {
+		LIVE, RECORDED
+	}
+	private ViewMode viewMode = ViewMode.LIVE;
+	
+	Button contrastIncButton;
+	Button contrastDecButton;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -39,6 +53,12 @@ public class GPSMap extends FragmentActivity
 		setContentView(R.layout.activity_map);
 
 		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+		
+		contrastIncButton = (Button) findViewById(R.id.buttonContrastInc);
+		contrastDecButton = (Button) findViewById(R.id.buttonContrastDec);
+		contrastIncButton.setOnClickListener(this);
+		contrastDecButton.setOnClickListener(this);
+
 	}
 
 	@Override
@@ -70,8 +90,9 @@ public class GPSMap extends FragmentActivity
 	
 	public void loadRecording(String szFile)
 	{
+		viewMode = ViewMode.RECORDED;
+		
 		streetData.clear();
-		map.clear();
 		
 		DataInputStream inputStream;
 		BufferedReader reader = null;
@@ -102,19 +123,11 @@ public class GPSMap extends FragmentActivity
 		
 		Toast.makeText(this, "Loading successed (" + streetData.size() + " points)", Toast.LENGTH_SHORT).show();
 		
-		for(int i = 0; i < streetData.size() - 1; i++)
-		{
-			map.addPolyline((new PolylineOptions())
-		        .add( 	new LatLng(streetData.get(i).getLatitude(), streetData.get(i).getLongitude()),
-		        		new LatLng(streetData.get(i + 1).getLatitude(), streetData.get(i + 1).getLongitude())	)
-		        .width(5)
-		        .color(Color.rgb(streetData.get(i).getColor(), 0xFF - streetData.get(i).getColor(), 0))
-		        .geodesic(true));
-		}
+		updateCurrentRecordingLines();
 
 		CameraPosition cameraPosition = new CameraPosition.Builder()
 	    .target(new LatLng(streetData.get(0).getLatitude(), streetData.get(0).getLongitude()))
-	    .zoom(8)
+	    .zoom(11)
 	    .bearing(0)
 	    .tilt(0)
 	    .build();
@@ -122,4 +135,64 @@ public class GPSMap extends FragmentActivity
 		map.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 	}
 	
+	private void updateCurrentRecordingLines()
+	{
+		map.clear();
+		
+		for(int i = 0; i < streetData.size() - 1; i++)
+		{
+			addLine(streetData.get(i), streetData.get(i + 1));
+		}
+	}
+	
+	public void addLine(StreetData startPoint, StreetData endPoint)
+	{
+		// Calculate the color from start-end point average
+		int color = (startPoint.getColor() + endPoint.getColor()) / 2;
+		
+		map.addPolyline((new PolylineOptions())
+	        .add( 	new LatLng(startPoint.getLatitude(), startPoint.getLongitude()),
+	        		new LatLng(endPoint.getLatitude(), endPoint.getLongitude())	)
+	        .width(5)
+	        .color(getColorForLine(color))
+	        .geodesic(true));
+	}
+
+	private int getColorForLine(int color)
+	{
+		color += contrast;
+		if(color > 0xFF)
+			color = 0xFF;
+		
+		return Color.rgb(color, 0xFF - color, 0);
+	}
+
+	@Override
+	public void onClick(View arg0)
+	{
+		switch(arg0.getId())
+		{
+			case R.id.buttonContrastInc:
+			{
+				if(contrast <= (0xFF - 5))
+					contrast += 5;
+			
+				updateCurrentRecordingLines();
+				Toast.makeText(this, "Contrast: " + contrast, Toast.LENGTH_SHORT).show();
+				
+				break;
+			}
+			
+			case R.id.buttonContrastDec:
+			{
+				if(contrast >= 5)
+					contrast -= 5;
+				
+				updateCurrentRecordingLines();
+				Toast.makeText(this, "Contrast: " + contrast, Toast.LENGTH_SHORT).show();
+				
+				break;
+			}
+		}
+	}
 }

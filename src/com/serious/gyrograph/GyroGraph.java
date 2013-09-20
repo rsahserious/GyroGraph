@@ -97,6 +97,8 @@ public class GyroGraph extends Activity implements OnClickListener, LocationList
 		
 		soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
 		soundPool.load(this, R.raw.update_beep, 1);
+		
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
 	}
 
 	@Override
@@ -146,7 +148,7 @@ public class GyroGraph extends Activity implements OnClickListener, LocationList
 			{
 				Intent intent = new Intent(this, GPSMap.class);
 				startActivity(intent);
-				
+
 				break;
 			}
 			
@@ -216,6 +218,8 @@ public class GyroGraph extends Activity implements OnClickListener, LocationList
 		{
 			recordingReadings.add( new StreetData(graphView.getCurrentRMS(), location.getLatitude(), location.getLongitude()) );
 			soundPool.play(R.raw.update_beep, 1.0f, 1.0f, 1, 0, 1.0f);
+			
+			
 		}
 	}
 
