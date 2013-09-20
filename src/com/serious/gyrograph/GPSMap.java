@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,11 +32,11 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 public class GPSMap extends FragmentActivity implements OnClickListener
 {
-	public static final int DEFAULT_CONTRAST = 0;
+	public static final float DEFAULT_CONTRAST = 1.0f;
 	
 	GoogleMap map;
 	List<StreetData> streetData = new ArrayList<StreetData>();
-	int contrast = DEFAULT_CONTRAST;
+	float contrast = DEFAULT_CONTRAST;
 	
 	private enum ViewMode {
 		LIVE, RECORDED
@@ -160,9 +161,12 @@ public class GPSMap extends FragmentActivity implements OnClickListener
 
 	private int getColorForLine(int color)
 	{
-		color += contrast;
+		color *= contrast;
+		
 		if(color > 0xFF)
 			color = 0xFF;
+		else if(color < 0)
+			color = 0;
 		
 		return Color.rgb(color, 0xFF - color, 0);
 	}
@@ -174,22 +178,26 @@ public class GPSMap extends FragmentActivity implements OnClickListener
 		{
 			case R.id.buttonContrastInc:
 			{
-				if(contrast <= (0xFF - 5))
-					contrast += 5;
+				if(contrast < 20.0f)
+					contrast += 0.1f;
 			
 				updateCurrentRecordingLines();
-				Toast.makeText(this, "Contrast: " + contrast, Toast.LENGTH_SHORT).show();
+				
+				DecimalFormat df = new DecimalFormat("#.#");
+				Toast.makeText(this, "Contrast: " + df.format(contrast), Toast.LENGTH_SHORT).show();
 				
 				break;
 			}
 			
 			case R.id.buttonContrastDec:
 			{
-				if(contrast >= 5)
-					contrast -= 5;
+				if(contrast > 0.1f)
+					contrast -= 0.1f;
 				
 				updateCurrentRecordingLines();
-				Toast.makeText(this, "Contrast: " + contrast, Toast.LENGTH_SHORT).show();
+				
+				DecimalFormat df = new DecimalFormat("#.#");
+				Toast.makeText(this, "Contrast: " + df.format(contrast), Toast.LENGTH_SHORT).show();
 				
 				break;
 			}

@@ -15,8 +15,8 @@ import android.view.View;
 
 public class GraphView extends View implements SensorEventListener
 {
-	private float sensivity = 35;
-	private float rmsLength = 500;
+	private float sensitivity = 135;
+	private float rmsLength = 250;
 
 	List<Float> readings = new ArrayList<Float>();
 	int currentRMS;
@@ -89,7 +89,7 @@ public class GraphView extends View implements SensorEventListener
 			if(rms < 0) rms = 0;
 			
 			float color = rms / (float) rmsLength;
-			color *= sensivity;
+			color *= sensitivity;
 			
 			if(color < 0)
 				color = 0;
@@ -138,12 +138,12 @@ public class GraphView extends View implements SensorEventListener
     
     public float getSensivity()
     {
-		return sensivity;
+		return sensitivity;
 	}
 
 	public void setSensivity(float sensivity)
 	{
-		this.sensivity = sensivity;
+		this.sensitivity = sensivity;
 	}
 
 	public float getRMSLength()

@@ -114,6 +114,7 @@ public class GyroGraph extends Activity implements OnClickListener, LocationList
 				break;
 			}
 			
+			
 			case R.id.buttonSensDec:
 			{
 				if(graphView.getSensivity() > 5)
